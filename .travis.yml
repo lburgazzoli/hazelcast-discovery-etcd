@@ -1,0 +1,19 @@
+sudo: false
+addons:
+  apt:
+    packages:
+    - oracle-java8-installer
+language:
+- java
+before_install:
+- "./hazelcast-discovery-etcd/src/main/bash/etcd_travis_install.sh"
+- "./hazelcast-discovery-etcd/src/main/bash/etcd_travis_run.sh"
+script:
+- "./gradlew clean uploadArchives"
+jdk:
+- oraclejdk8
+env:
+  global:
+  - CI_TRAVIS=true
+  - secure: n5s6GDCrCc+beS27+8ashViOlw5JqjSKe4gwK3+i6DUBwDLHFVV9XNkIEtDsqiUBqwCVO0oVu+4IKmEpBkT+RMP6guW+MVFDf4jKF5TtksIUbYELelUZimlEie5JEkKp4oD5MM0FDQ12igjkwHtTJsct0UWzgzQmuBKHsdmOM04S8JItlV9TcJMu0Cj/ZBqtlvUMYovVi2Na7qKrKB7aT1h+ZuxGx+Rsr5h+AEvPlMOS+MPo/pWnfg1hFsD5bupy92tfPuvoltX1INqG4ipWZZHmm2cP7NQ6A4DP+XyIoQEFX0rZYB41VWijGUUtMoHeO0+Gc3Es1F/aDNhlYKiqJ0QPnyyUc1KXhGYO3U5R3fsaTfTssjL6TY/PdbLTLdbM93zkpeD20b9YMWs6T0RStcI4TJ9xR/CCFtK8UNyQxHgLTLk36RBGFPNogYfu8w88oMm44VgFNDob11LOjMiimW8NacC1EEW3h7ZeaBHzC6aQW8ejFywSUbFlzKkz7FoitcwtuOuszvmfg4WHRuwRtCFiE3Y5uOACIc6OUM8SIwG0l/WPYSQZbvLitwNsDjmCgMZBItfNNB51DzpGh5p41AGybvZDLOLB13xdAXR1DU6s2+gSgslgjo/OmADcqpam7SYMpneiLJvzsjnbdLtqi3niE287a9yzBrRp0i94kbc=
+  - secure: n5REpotNwjqX0SCXHXvGWxiUYr+1urrmKghgOJLiSsxTelDx2C4Bk42LAosONczFTx0HjTd/KLIdDS1BeRbDMT/tBlSHFKLIb2R+9KYXfwx8WKOWq023W63H5o2Lr+0sLmLHW1enHYxFKadJ46ntIA9yrD5Ao16AUlO/xrSw3XT4Z3T16Q1i4BT/22lW3o8Xn/axvV4WkAbbjSt+vJ39kwAox+BboAC+vbDUpHpfqoN63O/vIpMOQfWNK3TCpAuIeaX5xfLnacwSB7fhPLhKSLAwZWwLZmpv+FQwOigBMm72xNkNyymWb/A+SVm2LVoa2nyuTNwfptegPmx0PrSMgycUjB6LuSiKcVpKg+O2/lpjTo2QlgM3GrRfpTLwYSfBjBEg9P4evUX1sH3RRvz0X7T3dn+I6JmYa/ae+vrTOpv4HbKK44eKJqN2/k1RLkKFHjm/h3X73WH2jM2Y2zm28I6hhEZommk6KxunlSe7XABJkpFsL9LgbY4LBI35nqLuWix7kB2uhTRXSkHeWWll/TZKNyf5iHYh+4/hn+/atlnpWVxvu8Vwj364ZQN2lV0DOsYA6bJ7JMNH8Mpdx2qyKg3zS+pmAN+Oa1qY1lv7L3EfaxjRWnMguoPMS0UO62rpfxzcsMe70MY69Hh7LypFwAFcTD9x3WtAU8lTwOfvtRM=
