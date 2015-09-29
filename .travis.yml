@@ -6,8 +6,8 @@ addons:
 language:
 - java
 before_install:
-- "./hazelcast-discovery-etcd/src/main/bash/etcd_travis_install.sh"
-- "./hazelcast-discovery-etcd/src/main/bash/etcd_travis_run.sh"
+- "./src/main/bash/etcd_travis_install.sh"
+- "./src/main/bash/etcd_travis_run.sh"
 script:
 - "./gradlew clean uploadArchives"
 jdk:
