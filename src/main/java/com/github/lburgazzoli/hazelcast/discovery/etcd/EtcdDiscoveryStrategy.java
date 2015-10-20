@@ -15,8 +15,7 @@
  */
 package com.github.lburgazzoli.hazelcast.discovery.etcd;
 
-import com.hazelcast.spi.discovery.DiscoveredNode;
-import com.hazelcast.spi.discovery.DiscoveryMode;
+import com.hazelcast.spi.discovery.DiscoveryNode;
 import com.hazelcast.spi.discovery.DiscoveryStrategy;
 import com.hazelcast.util.ExceptionUtil;
 import mousio.etcd4j.EtcdClient;
@@ -52,7 +51,7 @@ public class EtcdDiscoveryStrategy implements DiscoveryStrategy {
     }
 
     @Override
-    public void start(DiscoveryMode discoveryMode) {
+    public void start() {
         final URI[] uris = new URI[etcdUrls.length];
         for(int i=0; i<uris.length; i++) {
             uris[i] = URI.create(etcdUrls[i]);
@@ -62,8 +61,8 @@ public class EtcdDiscoveryStrategy implements DiscoveryStrategy {
     }
 
     @Override
-    public Collection<DiscoveredNode> discoverNodes() {
-        final Collection<DiscoveredNode> list = new LinkedList<>();
+    public Collection<DiscoveryNode> discoverNodes() {
+        final Collection<DiscoveryNode> list = new LinkedList<>();
 
         if(this.client != null) {
             try {

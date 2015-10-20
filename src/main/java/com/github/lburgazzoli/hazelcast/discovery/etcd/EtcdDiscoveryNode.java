@@ -19,13 +19,13 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.collect.Maps;
 import com.hazelcast.nio.Address;
-import com.hazelcast.spi.discovery.DiscoveredNode;
+import com.hazelcast.spi.discovery.DiscoveryNode;
 
 import java.net.UnknownHostException;
 import java.util.Map;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-class EtcdDiscoveryNode implements DiscoveredNode {
+class EtcdDiscoveryNode extends DiscoveryNode {
 
     private final Address address;
     private final Map<String, Object> properties;

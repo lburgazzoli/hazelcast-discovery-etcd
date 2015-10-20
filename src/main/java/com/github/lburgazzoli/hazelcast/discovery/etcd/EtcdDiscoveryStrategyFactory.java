@@ -16,6 +16,8 @@
 package com.github.lburgazzoli.hazelcast.discovery.etcd;
 
 import com.hazelcast.config.properties.PropertyDefinition;
+import com.hazelcast.logging.ILogger;
+import com.hazelcast.spi.discovery.DiscoveryNode;
 import com.hazelcast.spi.discovery.DiscoveryStrategy;
 import com.hazelcast.spi.discovery.DiscoveryStrategyFactory;
 import org.slf4j.Logger;
@@ -45,7 +47,8 @@ public class EtcdDiscoveryStrategyFactory implements DiscoveryStrategyFactory {
     }
 
     @Override
-    public DiscoveryStrategy newDiscoveryStrategy(Map<String, Comparable> properties) {
+    public DiscoveryStrategy newDiscoveryStrategy(DiscoveryNode discoveryNode, ILogger logger,
+                                                  Map<String, Comparable> properties) {
         return new EtcdDiscoveryStrategy(properties);
     }
 
