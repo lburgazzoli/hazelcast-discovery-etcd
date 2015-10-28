@@ -48,7 +48,7 @@ class EtcdDiscoveryTest {
         Collection<DiscoveryNode> nodes = provider.discoverNodes()
 
         assert nodes
-        assert EtcdDiscoveryTestSupport.NODES.size() == nodes.size()
+        assert EtcdDiscoveryTestSupport.NODES.size() == (nodes.size() - 1)
 
         nodes.each { node ->
             assert node.properties
