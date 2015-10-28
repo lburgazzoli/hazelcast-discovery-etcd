@@ -14,38 +14,19 @@
  * limitations under the License.
  */
 package com.github.lburgazzoli.hazelcast.discovery.etcd
-
 import com.google.common.collect.Maps
 import com.hazelcast.config.ClasspathXmlConfig
 import com.hazelcast.config.Config
 import com.hazelcast.core.Hazelcast
 import com.hazelcast.core.HazelcastInstance
+import com.hazelcast.nio.Address
 import com.hazelcast.spi.discovery.DiscoveryNode
 import com.hazelcast.spi.discovery.DiscoveryStrategy
 import com.hazelcast.spi.discovery.DiscoveryStrategyFactory
-import org.junit.After
-import org.junit.Before
+import com.hazelcast.spi.discovery.SimpleDiscoveryNode
 import org.junit.Test
 
 class EtcdDiscoveryTest {
-
-    // *************************************************************************
-    //
-    // *************************************************************************
-
-    @Before
-    public void setUp() {
-        if (null == System.getenv("CI_TRAVIS")) {
-            EtcdServerSimulator.setUp()
-        }
-    }
-
-    @After
-    public void tearDown() {
-        if(null == System.getenv("CI_TRAVIS")) {
-            EtcdServerSimulator.tearDown()
-        }
-    }
 
     // *************************************************************************
     //
@@ -56,9 +37,11 @@ class EtcdDiscoveryTest {
         Map<String, Comparable> properties = Maps.newHashMap();
         properties.put(EtcdDiscovery.PROPERTY_URLS.key(), EtcdDiscovery.DEFAULT_ETCD_URL)
         properties.put(EtcdDiscovery.PROPERTY_SERVICE_NAME.key(),EtcdDiscovery.DEFAULT_SERVICE_NAME)
+        properties.put(EtcdDiscovery.PROPERTY_REGISTER_LOCAL_NODE.key(),"true")
 
+        DiscoveryNode local = new SimpleDiscoveryNode(new Address("127.0.0.1", 1010));
         DiscoveryStrategyFactory factory = new EtcdDiscoveryStrategyFactory()
-        DiscoveryStrategy provider = factory.newDiscoveryStrategy(null, null, properties)
+        DiscoveryStrategy provider = factory.newDiscoveryStrategy(local, null, properties)
 
         provider.start()
 

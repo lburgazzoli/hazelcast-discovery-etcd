@@ -15,6 +15,8 @@
  */
 package com.github.lburgazzoli.hazelcast.discovery.etcd;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.collect.Maps;
@@ -27,35 +29,60 @@ import java.util.Map;
 @JsonIgnoreProperties(ignoreUnknown = true)
 class EtcdDiscoveryNode extends DiscoveryNode {
 
+    @JsonIgnore
     private final Address address;
-    private final Map<String, Object> properties;
 
+    @JsonIgnore
+    private final Map<String, Object> tags;
+
+    EtcdDiscoveryNode(DiscoveryNode node, String name) {
+        this.address = node.getPublicAddress();
+        this.tags = Maps.newHashMap(node.getProperties());
+        this.tags.put("name", name);
+    }
+
+    @JsonCreator
     public EtcdDiscoveryNode(
-            @JsonProperty("host") final String host,
-            @JsonProperty("port") final Integer port,
-            @JsonProperty("tags") final Map<String,String> tags)
-            throws UnknownHostException
+        @JsonProperty("host") final String host,
+        @JsonProperty("port") final Integer port,
+        @JsonProperty("tags") final Map<String, Object> tags)
+        throws UnknownHostException
     {
         this.address = new Address(host, port != null ? port : EtcdDiscovery.DEFAULT_HZ_PORT);
-        this.properties = Maps.newHashMap();
+        this.tags = Maps.newHashMap();
 
         if(tags != null) {
-            this.properties.putAll(tags);
+            this.tags.putAll(tags);
         }
     }
 
+    @JsonIgnore
     @Override
     public Address getPrivateAddress() {
         return this.address;
     }
 
+    @JsonIgnore
     @Override
     public Address getPublicAddress() {
         return this.address;
     }
 
+    @JsonIgnore
     @Override
     public Map<String, Object> getProperties() {
-        return this.properties;
+        return this.tags;
+    }
+
+    public String getHost() {
+        return this.address.getHost();
+    }
+
+    public int getPort() {
+        return this.address.getPort();
+    }
+
+    public Map<String, Object> getTags() {
+        return this.tags;
     }
 }

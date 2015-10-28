@@ -46,7 +46,7 @@ public class EtcdDiscoveryStrategyFactory implements DiscoveryStrategyFactory {
     @Override
     public DiscoveryStrategy newDiscoveryStrategy(
             DiscoveryNode localNode, ILogger logger ,Map<String, Comparable> properties) {
-        return new EtcdDiscoveryStrategy(localNode, logger, properties);
+        return new EtcdDiscoveryStrategy(localNode, properties);
     }
 
     @Override

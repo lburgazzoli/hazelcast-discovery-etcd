@@ -17,6 +17,13 @@ package com.github.lburgazzoli.hazelcast.discovery.etcd
 
 class EtcdDiscoveryTestSupport {
     public static final def NODES = [
+        "hazelcast-127.0.0.1-1010" : [
+            "host": "127.0.0.1",
+            "port": 1010,
+            "tags": [
+                "name": "hazelcast-127.0.0.1-1010"
+            ]
+        ],
         "node1" : [
             "host": "127.0.0.1",
             "port": 9001,

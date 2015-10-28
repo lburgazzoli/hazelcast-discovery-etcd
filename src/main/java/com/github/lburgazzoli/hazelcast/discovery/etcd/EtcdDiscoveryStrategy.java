@@ -15,7 +15,6 @@
  */
 package com.github.lburgazzoli.hazelcast.discovery.etcd;
 
-import com.hazelcast.logging.ILogger;
 import com.hazelcast.spi.discovery.DiscoveryNode;
 import com.hazelcast.spi.discovery.DiscoveryStrategy;
 import com.hazelcast.util.ExceptionUtil;
@@ -27,25 +26,25 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.net.URI;
-import java.util.*;
+import java.util.Collection;
+import java.util.LinkedList;
+import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 
 public class EtcdDiscoveryStrategy implements DiscoveryStrategy {
     private static final Logger LOGGER = LoggerFactory.getLogger(EtcdDiscoveryStrategy.class);
 
-    private final DiscoveryNode localNode;
-    private final ILogger logger;
+    private final EtcdDiscoveryNode localNode;
+    private final String localNodeName;
     private final String[] etcdUrls;
     private final String serviceName;
+    private final boolean registerLocalNode;
 
     private EtcdClient client;
 
-    public EtcdDiscoveryStrategy(DiscoveryNode localNode, ILogger logger, final Map<String, Comparable> properties) {
-        this.localNode = localNode;
-        this.logger = logger;
-        this.client = null;
-
+    public EtcdDiscoveryStrategy(DiscoveryNode node, final Map<String, Comparable> properties) {
         this.etcdUrls = ((String) properties.getOrDefault(
             EtcdDiscovery.PROPERTY_URLS.key(),
             EtcdDiscovery.DEFAULT_ETCD_URLS))
@@ -53,6 +52,17 @@ public class EtcdDiscoveryStrategy implements DiscoveryStrategy {
         this.serviceName = (String) properties.getOrDefault(
             EtcdDiscovery.PROPERTY_SERVICE_NAME.key(),
             EtcdDiscovery.DEFAULT_SERVICE_NAME);
+        this.localNodeName = (String) properties.getOrDefault(
+            EtcdDiscovery.PROPERTY_LOCAL_NODE_NAME.key(),
+            this.serviceName
+                + "-" + node.getPublicAddress().getHost()
+                + "-" + node.getPublicAddress().getPort());
+        this.registerLocalNode = Boolean.valueOf((String)properties.getOrDefault(
+            EtcdDiscovery.PROPERTY_REGISTER_LOCAL_NODE.key(),
+            EtcdDiscovery.DEFAULT_REGISTER_LOCAL_NODE));
+
+        this.localNode = new EtcdDiscoveryNode(node, this.localNodeName);
+        this.client = null;
     }
 
     @Override
@@ -63,6 +73,16 @@ public class EtcdDiscoveryStrategy implements DiscoveryStrategy {
         }
 
         this.client = new EtcdClient(uris);
+        if(registerLocalNode) {
+            try {
+                this.client.put(
+                    "/" + this.serviceName + "/" + this.localNodeName,
+                    EtcdDiscovery.MAPPER.writeValueAsString(this.localNode)
+                ).send().get();
+            } catch(Exception e) {
+                LOGGER.warn("", e);
+            }
+        }
     }
 
     @Override
