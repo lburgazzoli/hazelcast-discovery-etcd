@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Luca Burgazzoli
+ * Copyright (c) 2015 Luca Burgazzoli and contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,8 +20,7 @@ import com.hazelcast.config.ClasspathXmlConfig
 import com.hazelcast.config.Config
 import com.hazelcast.core.Hazelcast
 import com.hazelcast.core.HazelcastInstance
-import com.hazelcast.spi.discovery.DiscoveredNode
-import com.hazelcast.spi.discovery.DiscoveryMode
+import com.hazelcast.spi.discovery.DiscoveryNode
 import com.hazelcast.spi.discovery.DiscoveryStrategy
 import com.hazelcast.spi.discovery.DiscoveryStrategyFactory
 import org.junit.After
@@ -59,11 +58,11 @@ class EtcdDiscoveryTest {
         properties.put(EtcdDiscovery.PROPERTY_SERVICE_NAME.key(),EtcdDiscovery.DEFAULT_SERVICE_NAME)
 
         DiscoveryStrategyFactory factory = new EtcdDiscoveryStrategyFactory()
-        DiscoveryStrategy provider = factory.newDiscoveryStrategy(properties)
+        DiscoveryStrategy provider = factory.newDiscoveryStrategy(null, null, properties)
 
-        provider.start(DiscoveryMode.Member)
+        provider.start()
 
-        Collection<DiscoveredNode> nodes = provider.discoverNodes()
+        Collection<DiscoveryNode> nodes = provider.discoverNodes()
 
         assert nodes
         assert EtcdDiscoveryTestSupport.NODES.size() == nodes.size()

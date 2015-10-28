@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Luca Burgazzoli
+ * Copyright (c) 2015 Luca Burgazzoli and contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,8 +20,6 @@ import com.hazelcast.logging.ILogger;
 import com.hazelcast.spi.discovery.DiscoveryNode;
 import com.hazelcast.spi.discovery.DiscoveryStrategy;
 import com.hazelcast.spi.discovery.DiscoveryStrategyFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -29,7 +27,6 @@ import java.util.Collections;
 import java.util.Map;
 
 public class EtcdDiscoveryStrategyFactory implements DiscoveryStrategyFactory {
-    private static final Logger LOGGER = LoggerFactory.getLogger(EtcdDiscoveryStrategyFactory.class);
     private final Collection<PropertyDefinition> propertyDefinitions;
 
     public EtcdDiscoveryStrategyFactory() {
@@ -47,9 +44,9 @@ public class EtcdDiscoveryStrategyFactory implements DiscoveryStrategyFactory {
     }
 
     @Override
-    public DiscoveryStrategy newDiscoveryStrategy(DiscoveryNode discoveryNode, ILogger logger,
-                                                  Map<String, Comparable> properties) {
-        return new EtcdDiscoveryStrategy(properties);
+    public DiscoveryStrategy newDiscoveryStrategy(
+            DiscoveryNode localNode, ILogger logger ,Map<String, Comparable> properties) {
+        return new EtcdDiscoveryStrategy(localNode, logger, properties);
     }
 
     @Override

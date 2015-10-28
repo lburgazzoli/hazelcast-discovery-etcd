@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Luca Burgazzoli
+ * Copyright (c) 2015 Luca Burgazzoli and contributors as indicated by the @author tags.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,7 @@
  */
 package com.github.lburgazzoli.hazelcast.discovery.etcd;
 
+import com.hazelcast.logging.ILogger;
 import com.hazelcast.spi.discovery.DiscoveryNode;
 import com.hazelcast.spi.discovery.DiscoveryStrategy;
 import com.hazelcast.util.ExceptionUtil;
@@ -33,12 +34,16 @@ import java.util.function.Function;
 public class EtcdDiscoveryStrategy implements DiscoveryStrategy {
     private static final Logger LOGGER = LoggerFactory.getLogger(EtcdDiscoveryStrategy.class);
 
+    private final DiscoveryNode localNode;
+    private final ILogger logger;
     private final String[] etcdUrls;
     private final String serviceName;
 
     private EtcdClient client;
 
-    public EtcdDiscoveryStrategy(final Map<String, Comparable> properties) {
+    public EtcdDiscoveryStrategy(DiscoveryNode localNode, ILogger logger, final Map<String, Comparable> properties) {
+        this.localNode = localNode;
+        this.logger = logger;
         this.client = null;
 
         this.etcdUrls = ((String) properties.getOrDefault(
