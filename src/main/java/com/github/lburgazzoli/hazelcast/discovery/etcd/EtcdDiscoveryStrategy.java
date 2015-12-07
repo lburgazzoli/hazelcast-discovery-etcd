@@ -100,9 +100,9 @@ public class EtcdDiscoveryStrategy implements DiscoveryStrategy {
                 if(response.node != null) {
                     response.node.nodes.stream()
                         .map(node -> node.value)
-                        .filter(StringUtils::isNotBlank)
+                            .filter(StringUtils::isNotBlank)
                         .map(new Node2Address())
-                        .filter(Objects::nonNull)
+                            .filter(Objects::nonNull)
                         .forEach(list::add);
                 }
             } catch (Exception e) {

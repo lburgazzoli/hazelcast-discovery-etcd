@@ -53,5 +53,5 @@ public class EtcdDiscovery {
     public static final PropertyDefinition PROPERTY_REGISTER_LOCAL_NODE =
         new SimplePropertyDefinition("registerLocalNode", PropertyTypeConverter.BOOLEAN);
     public static final PropertyDefinition PROPERTY_LOCAL_NODE_NAME =
-            new SimplePropertyDefinition("localNodeName", PropertyTypeConverter.STRING);
+        new SimplePropertyDefinition("localNodeName", PropertyTypeConverter.STRING);
 }
