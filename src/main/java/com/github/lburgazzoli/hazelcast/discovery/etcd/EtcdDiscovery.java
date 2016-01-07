@@ -79,6 +79,6 @@ public class EtcdDiscovery {
     public static <T extends Comparable> T getProperty(
             Map<String, Comparable> properties, PropertyDefinition property, T defaultValue) {
 
-        return (T)properties.getOrDefault(property, defaultValue);
+        return (T)properties.getOrDefault(property.key(), defaultValue);
     }
 }
