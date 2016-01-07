@@ -202,3 +202,14 @@ modifyPom {
         }
     }
 }
+
+// *****************************************************************************
+//
+// *****************************************************************************
+
+afterReleaseBuild.dependsOn uploadArchives
+//closeAndPromoteRepository.dependsOn uploadArchives
+
+task promote(dependsOn: closeAndPromoteRepository) {
+    println "Release"
+}
