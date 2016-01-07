@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package com.github.lburgazzoli.hazelcast.discovery.etcd
+
 import com.hazelcast.config.ClasspathXmlConfig
 import com.hazelcast.config.Config
 import com.hazelcast.core.Hazelcast
@@ -33,10 +34,11 @@ class EtcdDiscoveryTest {
 
     @Test
     public void discoveryProviderTest() {
-        Map<String, Comparable> properties = Maps.newHashMap();
-        properties.put(EtcdDiscovery.PROPERTY_URLS.key(), EtcdDiscovery.DEFAULT_ETCD_URL)
-        properties.put(EtcdDiscovery.PROPERTY_SERVICE_NAME.key(),EtcdDiscovery.DEFAULT_SERVICE_NAME)
-        properties.put(EtcdDiscovery.PROPERTY_REGISTER_LOCAL_NODE.key(),"true")
+
+        def properties = [:]
+        properties[ EtcdDiscovery.PROPERTY_URLS.key() ] = EtcdDiscovery.DEFAULT_ETCD_URL
+        properties[ EtcdDiscovery.PROPERTY_SERVICE_NAME.key()] = EtcdDiscovery.DEFAULT_SERVICE_NAME
+        properties[ EtcdDiscovery.PROPERTY_REGISTER_LOCAL_NODE.key()] = "true"
 
         DiscoveryNode local = new SimpleDiscoveryNode(new Address("127.0.0.1", 1010));
         DiscoveryStrategyFactory factory = new EtcdDiscoveryStrategyFactory()
