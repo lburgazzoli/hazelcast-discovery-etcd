@@ -51,7 +51,6 @@ ext {
             junit              : '4.12',
             etcd4j             : '2.8.0',
             groovy             : '2.4.5',
-            sparkFramework     : '2.3'
         ]
     }
 
@@ -115,10 +114,6 @@ dependencies {
     testCompile("org.slf4j:slf4j-simple:$versions.slf4j") { transitive = false }
     testCompile "org.codehaus.groovy:groovy-all:$versions.groovy:indy"
     testCompile "junit:junit:$versions.junit"
-
-    testCompile("com.sparkjava:spark-core:$versions.sparkFramework") {
-        exclude group: 'org.slf4j'
-    }
 }
 
 test {
