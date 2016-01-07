@@ -32,6 +32,8 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
+import static com.github.lburgazzoli.hazelcast.discovery.etcd.EtcdDiscovery.getProperty;
+
 public class EtcdDiscoveryStrategy implements DiscoveryStrategy {
     private static final Logger LOGGER = LoggerFactory.getLogger(EtcdDiscoveryStrategy.class);
 
@@ -45,23 +47,32 @@ public class EtcdDiscoveryStrategy implements DiscoveryStrategy {
     private EtcdClient client;
 
     public EtcdDiscoveryStrategy(DiscoveryNode node, final Map<String, Comparable> properties) {
-        this.etcdUrls = ((String) properties.getOrDefault(
-            EtcdDiscovery.PROPERTY_URLS.key(),
-            EtcdDiscovery.DEFAULT_ETCD_URLS))
+        this.etcdUrls = getProperty(
+            properties,
+            EtcdDiscovery.PROPERTY_URLS,
+            EtcdDiscovery.DEFAULT_ETCD_URLS)
                 .split(EtcdDiscovery.URLS_SEPARATOR);
-        this.serviceName = (String) properties.getOrDefault(
-            EtcdDiscovery.PROPERTY_SERVICE_NAME.key(),
+
+        this.serviceName = getProperty(
+            properties,
+            EtcdDiscovery.PROPERTY_SERVICE_NAME,
             EtcdDiscovery.DEFAULT_SERVICE_NAME);
-        this.localNodeName = (String) properties.getOrDefault(
-            EtcdDiscovery.PROPERTY_LOCAL_NODE_NAME.key(),
+
+        this.localNodeName = getProperty(
+            properties,
+            EtcdDiscovery.PROPERTY_LOCAL_NODE_NAME,
             this.serviceName
                 + "-" + node.getPublicAddress().getHost()
                 + "-" + node.getPublicAddress().getPort());
-        this.registerLocalNode = (Boolean)properties.getOrDefault(
-            EtcdDiscovery.PROPERTY_REGISTER_LOCAL_NODE.key(),
+
+        this.registerLocalNode = getProperty(
+            properties,
+            EtcdDiscovery.PROPERTY_REGISTER_LOCAL_NODE,
             EtcdDiscovery.DEFAULT_REGISTER_LOCAL_NODE);
-        this.timeout = (Integer)properties.getOrDefault(
-            EtcdDiscovery.PROPERTY_TIMEOUT.key(),
+
+        this.timeout = getProperty(
+            properties,
+            EtcdDiscovery.PROPERTY_TIMEOUT,
             EtcdDiscovery.DEFAULT_ETCD_TIMEOUT_SEC);
 
         this.localNode = new EtcdDiscoveryNode(node, this.localNodeName);

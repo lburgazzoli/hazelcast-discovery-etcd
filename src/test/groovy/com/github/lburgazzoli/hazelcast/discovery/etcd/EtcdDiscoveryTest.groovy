@@ -37,8 +37,8 @@ class EtcdDiscoveryTest {
 
         def properties = [:]
         properties[ EtcdDiscovery.PROPERTY_URLS.key() ] = EtcdDiscovery.DEFAULT_ETCD_URL
-        properties[ EtcdDiscovery.PROPERTY_SERVICE_NAME.key()] = EtcdDiscovery.DEFAULT_SERVICE_NAME
-        properties[ EtcdDiscovery.PROPERTY_REGISTER_LOCAL_NODE.key()] = "true"
+        properties[ EtcdDiscovery.PROPERTY_SERVICE_NAME.key() ] = EtcdDiscovery.DEFAULT_SERVICE_NAME
+        properties[ EtcdDiscovery.PROPERTY_REGISTER_LOCAL_NODE.key() ] = true
 
         DiscoveryNode local = new SimpleDiscoveryNode(new Address("127.0.0.1", 1010));
         DiscoveryStrategyFactory factory = new EtcdDiscoveryStrategyFactory()

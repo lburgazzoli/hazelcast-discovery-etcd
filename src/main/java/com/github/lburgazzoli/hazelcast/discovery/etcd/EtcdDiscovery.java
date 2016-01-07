@@ -27,6 +27,8 @@ import com.hazelcast.config.properties.SimplePropertyDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Map;
+
 public class EtcdDiscovery {
     private static final Logger LOGGER = LoggerFactory.getLogger(EtcdDiscovery.class);
 
@@ -71,5 +73,12 @@ public class EtcdDiscovery {
 
     public static String asString(Object value) throws JsonProcessingException {
         return MAPPER.writeValueAsString(value);
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <T extends Comparable> T getProperty(
+            Map<String, Comparable> properties, PropertyDefinition property, T defaultValue) {
+
+        return (T)properties.getOrDefault(property, defaultValue);
     }
 }
