@@ -33,7 +33,10 @@ public class EtcdDiscoveryStrategyFactory implements DiscoveryStrategyFactory {
         this.propertyDefinitions = Collections.unmodifiableCollection(
             Arrays.asList(
                 EtcdDiscovery.PROPERTY_URLS,
-                EtcdDiscovery.PROPERTY_SERVICE_NAME
+                EtcdDiscovery.PROPERTY_SERVICE_NAME,
+                EtcdDiscovery.PROPERTY_LOCAL_NODE_NAME,
+                EtcdDiscovery.PROPERTY_REGISTER_LOCAL_NODE,
+                EtcdDiscovery.PROPERTY_TIMEOUT
             )
         );
     }

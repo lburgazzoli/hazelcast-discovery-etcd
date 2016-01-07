@@ -1,6 +1,18 @@
 // *****************************************************************************
-// -Djava.util.logging.manager=org.apache.logging.log4j.jul.LogManager
+//
 // *****************************************************************************
+
+buildscript {
+    repositories {
+        mavenCentral()
+        mavenLocal()
+        jcenter()
+    }
+
+    dependencies {
+        classpath 'io.codearte.gradle.nexus:gradle-nexus-staging-plugin:0.5.3'
+    }
+}
 
 plugins {
     id 'java'
@@ -9,32 +21,32 @@ plugins {
     id 'idea'
     id 'osgi'
     id 'com.bmuschko.nexus' version '2.3.1'
-    id 'com.github.ben-manes.versions' version '0.11.3'
+    id 'net.researchgate.release' version '2.3.4'
+    //id 'com.github.ben-manes.versions' version '0.11.3'
+    //id "com.github.nwillc.vplugin" version "1.2.5"
 }
 
-apply from: "$rootDir/gradle/dependency-updates.gradle"
+apply plugin: 'io.codearte.nexus-staging'
+//apply from: "$rootDir/gradle/dependency-updates.gradle"
 
 // *****************************************************************************
 //
 // *****************************************************************************
 
-version = '3.6.0-SNAPSHOT'
 group   = 'com.github.lburgazzoli'
 
 ext {
     isReleaseVersion = !version.endsWith("SNAPSHOT")
+    isCiBuild        = System.getenv('CI_TRAVIS') != null
     gitRoot          = "https://github.com/lburgazzoli"
     gitProject       = "https://github.com/lburgazzoli/hazelcast-discovery-etcd"
+    gitURI           = "git@github.com/lburgazzoli/hazelcast-discovery-etcd.git"
 
     ext {
         versions = [
             slf4j              : '1.7.13',
-            hazelcast          : '3.6-EA2',
-            guava              : '18.0',
+            hazelcast          : '3.6-EA3',
             commonsLang        : '3.4',
-            commonsCollections : '4.1',
-            commonsLang        : '3.4',
-            commonsCollections : '4.1',
             jackson            : '2.6.4',
             junit              : '4.12',
             etcd4j             : '2.8.0',
@@ -85,20 +97,14 @@ repositories {
     mavenLocal()
     mavenCentral()
     jcenter()
-
-    //maven { url 'https://oss.sonatype.org/content/repositories/releases' }
-    maven { url "https://oss.sonatype.org/content/repositories/snapshots" }
 }
 
 dependencies {
     compile("org.slf4j:slf4j-api:$versions.slf4j") { transitive = false }
     runtime("org.slf4j:slf4j-ext:$versions.slf4j") { transitive = false }
 
-    compile "com.google.guava:guava:$versions.guava"
     compile "org.apache.commons:commons-lang3:$versions.commonsLang"
-    compile "org.apache.commons:commons-collections4:$versions.commonsCollections"
-
-    compile "com.hazelcast:hazelcast-all:$versions.hazelcast"
+    compile "com.hazelcast:hazelcast:$versions.hazelcast"
     compile "org.mousio:etcd4j:$versions.etcd4j"
 
     compile "com.fasterxml.jackson.core:jackson-core:$versions.jackson"
@@ -157,7 +163,7 @@ jar {
 // *************************************************************************
 
 nexus {
-    sign    = false
+    sign = project.isReleaseVersion && !project.isCiBuild
 }
 
 extraArchive {
@@ -183,8 +189,8 @@ modifyPom {
 
         scm {
             url                 = "${project.gitProject}"
-            connection          = "scm:git:${project.gitProject}.git"
-            developerConnection = "scm:git:${project.gitProject}.git"
+            connection          = "scm:git:${project.gitURI}"
+            developerConnection = "scm:git:${project.gitURI}"
         }
 
         developers {

@@ -16,6 +16,7 @@
 package com.github.lburgazzoli.hazelcast.discovery.etcd;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.module.afterburner.AfterburnerModule;
@@ -23,10 +24,12 @@ import com.hazelcast.config.NetworkConfig;
 import com.hazelcast.config.properties.PropertyDefinition;
 import com.hazelcast.config.properties.PropertyTypeConverter;
 import com.hazelcast.config.properties.SimplePropertyDefinition;
-
-import java.util.Properties;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class EtcdDiscovery {
+    private static final Logger LOGGER = LoggerFactory.getLogger(EtcdDiscovery.class);
+
     public static final ObjectMapper MAPPER =
         new ObjectMapper()
             .registerModule(new AfterburnerModule())
@@ -34,24 +37,39 @@ public class EtcdDiscovery {
             .setSerializationInclusion(JsonInclude.Include.NON_NULL);
 
     public static final int    DEFAULT_HZ_PORT             = NetworkConfig.DEFAULT_PORT;
-    public static final int    DEFAULT_ETCD_PORT           = 4001;
     public static final String DEFAULT_ETCD_URL            = "http://localhost:4001";
     public static final String DEFAULT_ETCD_URLS           = "http://localhost:2379,http://localhost:4001";
+    public static final String DEFAULT_ETCD_TIMEOUT_SEC    = "5";
     public static final String DEFAULT_SERVICE_NAME        = "hazelcast";
     public static final String DEFAULT_REGISTER_LOCAL_NODE = "false";
-    public static final String CONFIG_KEY_HOST             = "host";
-    public static final String CONFIG_KEY_PORT             = "port";
-    public static final String CONFIG_KEY_TAGS             = "tags";
     public static final String URLS_SEPARATOR              = ",";
-
-    public static final Properties NO_PROPERTIES = new Properties();
 
     public static final PropertyDefinition PROPERTY_URLS =
         new SimplePropertyDefinition("urls", PropertyTypeConverter.STRING);
     public static final PropertyDefinition PROPERTY_SERVICE_NAME =
         new SimplePropertyDefinition("serviceName", PropertyTypeConverter.STRING);
     public static final PropertyDefinition PROPERTY_REGISTER_LOCAL_NODE =
-        new SimplePropertyDefinition("registerLocalNode", PropertyTypeConverter.BOOLEAN);
+        new SimplePropertyDefinition("registerLocalNode", true, PropertyTypeConverter.BOOLEAN);
     public static final PropertyDefinition PROPERTY_LOCAL_NODE_NAME =
-        new SimplePropertyDefinition("localNodeName", PropertyTypeConverter.STRING);
+        new SimplePropertyDefinition("localNodeName", true, PropertyTypeConverter.STRING);
+    public static final PropertyDefinition PROPERTY_TIMEOUT =
+        new SimplePropertyDefinition("timeout", true, PropertyTypeConverter.INTEGER);
+
+    // *************************************************************************
+    //
+    // *************************************************************************
+
+    public static EtcdDiscoveryNode nodeFromString(String value) {
+        try {
+            return MAPPER.readValue(value, EtcdDiscoveryNode.class);
+        } catch(Exception e) {
+            LOGGER.warn("", e);
+        }
+
+        return null;
+    }
+
+    public static String asString(Object value) throws JsonProcessingException {
+        return MAPPER.writeValueAsString(value);
+    }
 }

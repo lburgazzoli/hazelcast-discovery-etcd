@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 package com.github.lburgazzoli.hazelcast.discovery.etcd
-import com.google.common.collect.Maps
 import com.hazelcast.config.ClasspathXmlConfig
 import com.hazelcast.config.Config
 import com.hazelcast.core.Hazelcast

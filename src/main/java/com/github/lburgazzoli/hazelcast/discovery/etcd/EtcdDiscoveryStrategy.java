@@ -31,7 +31,6 @@ import java.util.LinkedList;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
-import java.util.function.Function;
 
 public class EtcdDiscoveryStrategy implements DiscoveryStrategy {
     private static final Logger LOGGER = LoggerFactory.getLogger(EtcdDiscoveryStrategy.class);
@@ -41,6 +40,7 @@ public class EtcdDiscoveryStrategy implements DiscoveryStrategy {
     private final String[] etcdUrls;
     private final String serviceName;
     private final boolean registerLocalNode;
+    private final int timeout;
 
     private EtcdClient client;
 
@@ -60,6 +60,9 @@ public class EtcdDiscoveryStrategy implements DiscoveryStrategy {
         this.registerLocalNode = Boolean.valueOf((String)properties.getOrDefault(
             EtcdDiscovery.PROPERTY_REGISTER_LOCAL_NODE.key(),
             EtcdDiscovery.DEFAULT_REGISTER_LOCAL_NODE));
+        this.timeout = Integer.parseInt((String)properties.getOrDefault(
+            EtcdDiscovery.PROPERTY_TIMEOUT.key(),
+            EtcdDiscovery.DEFAULT_ETCD_TIMEOUT_SEC));
 
         this.localNode = new EtcdDiscoveryNode(node, this.localNodeName);
         this.client = null;
@@ -76,11 +79,14 @@ public class EtcdDiscoveryStrategy implements DiscoveryStrategy {
         if(registerLocalNode) {
             try {
                 this.client.put(
-                    "/" + this.serviceName + "/" + this.localNodeName,
-                    EtcdDiscovery.MAPPER.writeValueAsString(this.localNode)
-                ).send().get();
+                        "/" + this.serviceName + "/" + this.localNodeName,
+                        EtcdDiscovery.asString(this.localNode)
+                    )
+                    .timeout(timeout, TimeUnit.SECONDS)
+                    .send()
+                    .get();
             } catch(Exception e) {
-                LOGGER.warn("", e);
+                throw ExceptionUtil.rethrow(e);
             }
         }
     }
@@ -93,7 +99,7 @@ public class EtcdDiscoveryStrategy implements DiscoveryStrategy {
             try {
                 final EtcdKeysResponse response = client.getDir(this.serviceName)
                     .recursive()
-                    .timeout(1, TimeUnit.SECONDS)
+                    .timeout(timeout, TimeUnit.SECONDS)
                     .send()
                     .get();
 
@@ -101,12 +107,11 @@ public class EtcdDiscoveryStrategy implements DiscoveryStrategy {
                     response.node.nodes.stream()
                         .map(node -> node.value)
                             .filter(StringUtils::isNotBlank)
-                        .map(new Node2Address())
+                        .map(EtcdDiscovery::nodeFromString)
                             .filter(Objects::nonNull)
                         .forEach(list::add);
                 }
             } catch (Exception e) {
-                LOGGER.warn("", e);
                 throw ExceptionUtil.rethrow(e);
             }
         }
@@ -119,28 +124,9 @@ public class EtcdDiscoveryStrategy implements DiscoveryStrategy {
         try {
             this.client.close();
         } catch(IOException e) {
-            LOGGER.warn("", e);
-        }
-
-        this.client = null;
-    }
-
-    // *************************************************************************
-    //
-    // *************************************************************************
-
-    private static final class Node2Address
-            implements Function<String, EtcdDiscoveryNode> {
-
-        @Override
-        public EtcdDiscoveryNode apply(String value) {
-            try {
-                return EtcdDiscovery.MAPPER.readValue(value, EtcdDiscoveryNode.class);
-            } catch(Exception e) {
-                LOGGER.warn("", e);
-            }
-
-            return null;
+            throw ExceptionUtil.rethrow(e);
+        } finally {
+            this.client = null;
         }
     }
 }

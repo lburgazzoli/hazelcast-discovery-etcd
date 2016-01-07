@@ -19,16 +19,15 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.google.common.collect.Maps;
 import com.hazelcast.nio.Address;
 import com.hazelcast.spi.discovery.DiscoveryNode;
 
 import java.net.UnknownHostException;
+import java.util.HashMap;
 import java.util.Map;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 class EtcdDiscoveryNode extends DiscoveryNode {
-
     @JsonIgnore
     private final Address address;
 
@@ -37,7 +36,7 @@ class EtcdDiscoveryNode extends DiscoveryNode {
 
     EtcdDiscoveryNode(DiscoveryNode node, String name) {
         this.address = node.getPublicAddress();
-        this.tags = Maps.newHashMap(node.getProperties());
+        this.tags = new HashMap<>(node.getProperties());
         this.tags.put("name", name);
     }
 
@@ -49,7 +48,7 @@ class EtcdDiscoveryNode extends DiscoveryNode {
         throws UnknownHostException
     {
         this.address = new Address(host, port != null ? port : EtcdDiscovery.DEFAULT_HZ_PORT);
-        this.tags = Maps.newHashMap();
+        this.tags = new HashMap<>();
 
         if(tags != null) {
             this.tags.putAll(tags);
