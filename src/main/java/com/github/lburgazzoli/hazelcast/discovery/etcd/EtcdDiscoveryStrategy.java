@@ -57,12 +57,12 @@ public class EtcdDiscoveryStrategy implements DiscoveryStrategy {
             this.serviceName
                 + "-" + node.getPublicAddress().getHost()
                 + "-" + node.getPublicAddress().getPort());
-        this.registerLocalNode = Boolean.valueOf((String)properties.getOrDefault(
+        this.registerLocalNode = (Boolean)properties.getOrDefault(
             EtcdDiscovery.PROPERTY_REGISTER_LOCAL_NODE.key(),
-            EtcdDiscovery.DEFAULT_REGISTER_LOCAL_NODE));
-        this.timeout = Integer.parseInt((String)properties.getOrDefault(
+            EtcdDiscovery.DEFAULT_REGISTER_LOCAL_NODE);
+        this.timeout = (Integer)properties.getOrDefault(
             EtcdDiscovery.PROPERTY_TIMEOUT.key(),
-            EtcdDiscovery.DEFAULT_ETCD_TIMEOUT_SEC));
+            EtcdDiscovery.DEFAULT_ETCD_TIMEOUT_SEC);
 
         this.localNode = new EtcdDiscoveryNode(node, this.localNodeName);
         this.client = null;
