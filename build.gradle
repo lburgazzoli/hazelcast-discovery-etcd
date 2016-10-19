@@ -52,7 +52,7 @@ ext {
             jackson            : '2.8.4',
             junit              : '4.12',
             etcd4j             : '2.8.0',
-            groovy             : '2.4.5',
+            groovy             : '2.4.7',
         ]
     }
 
