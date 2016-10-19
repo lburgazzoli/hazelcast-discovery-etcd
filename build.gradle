@@ -47,7 +47,7 @@ ext {
             slf4j              : '1.7.13',
             hazelcast          : '3.6',
             commonsLang        : '3.4',
-            jackson            : '2.7.0',
+            jackson            : '2.8.4',
             junit              : '4.12',
             etcd4j             : '2.8.0',
             groovy             : '2.4.5',
@@ -97,8 +97,8 @@ idea {
 // *************************************************************************
 
 repositories {
-    mavenLocal()
     mavenCentral()
+    mavenLocal()
     jcenter()
 }
 
