@@ -39,8 +39,8 @@ public class EtcdDiscovery {
             .setSerializationInclusion(JsonInclude.Include.NON_NULL);
 
     public static final int    DEFAULT_HZ_PORT             = NetworkConfig.DEFAULT_PORT;
-    public static final String  DEFAULT_ETCD_URL            = "http://localhost:4001";
-    public static final String  DEFAULT_ETCD_URLS           = "http://localhost:2379,http://localhost:4001";
+    public static final String  DEFAULT_ETCD_URL            = "http://127.0.0.1:4001";
+    public static final String  DEFAULT_ETCD_URLS           = "http://127.0.0.1:2379,http://127.0.0.1:4001";
     public static final int     DEFAULT_ETCD_TIMEOUT_SEC    = 5;
     public static final String  DEFAULT_SERVICE_NAME        = "hazelcast";
     public static final boolean DEFAULT_REGISTER_LOCAL_NODE = false;
