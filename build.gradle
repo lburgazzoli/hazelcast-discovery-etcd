@@ -32,8 +32,8 @@ apply plugin: 'io.codearte.nexus-staging'
 
 group               = 'com.github.lburgazzoli'
 description         = 'An Etcd based discovery mechanisms for Hazelcast'
-sourceCompatibility = JavaVersion.VERSION_1_7
-targetCompatibility = JavaVersion.VERSION_1_7
+sourceCompatibility = JavaVersion.VERSION_1_8
+targetCompatibility = JavaVersion.VERSION_1_8
 
 ext {
     isReleaseVersion = !version.endsWith("SNAPSHOT")
@@ -77,12 +77,8 @@ ext {
 }
 
 compileJava {
-    // Suppress warnings about using Unsafe and sun.misc
-    //options.compilerArgs << '-XDignore.symbol.file'
-    //options.compilerArgs << '-parameters'
-
-    sourceCompatibility = 1.8
-    targetCompatibility = 1.8
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
 }
 
 // *************************************************************************
