@@ -1,16 +1,11 @@
 #!/usr/bin/env bash
 
-HOST_IP="127.0.0.1"
 ETCD_NAME="hz-discovery"
 
 ./etcd-dist/etcd \
     -debug \
     -name $ETCD_NAME \
-    --data-dir ./etcd-dist/$ETCD_NAME \
-    -listen-client-urls http://0.0.0.0:2379,http://0.0.0.0:4001 \
-    -listen-peer-urls http://0.0.0.0:2380 &
-
-
+    --data-dir ./etcd-dist/$ETCD_NAME &
 
 sleep 5
 
