@@ -1,6 +1,20 @@
 #!/usr/bin/env bash
 
-./etcd-dist/etcd --name 'lb-hazelcast-discovery' --data-dir /tmp/lb-hazelcast-discovery &
+HOST_IP="127.0.0.1"
+ETCD_NAME="hz-discovery"
+
+./etcd-dist/etcd \
+    -debug \
+    -name $ETCD_NAME \
+    --data-dir ./etcd-dist/$ETCD_NAME \
+    -advertise-client-urls http://${HOST_IP}:2379,http://${HOST_IP}:4001 \
+    -listen-client-urls http://0.0.0.0:2379,http://0.0.0.0:4001 \
+    -initial-advertise-peer-urls http://${HOST_IP}:2380 \
+    -listen-peer-urls http://0.0.0.0:2380 \
+    -initial-cluster-token "${ETCD_NAME}-cluster" \
+    -initial-cluster etcdv2-0=http://${HOST_IP}:2380 \
+    -initial-cluster-state new &
+
 
 sleep 5
 
