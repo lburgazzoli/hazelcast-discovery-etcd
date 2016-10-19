@@ -21,7 +21,7 @@
                         enabled = "true"
                         class   = "com.github.lburgazzoli.hazelcast.discovery.etcd.EtcdDiscoveryStrategy">
                     <properties>
-                        <property name ="urls">http://localhost:4001</property>
+                        <property name ="urls">http://127.0.0.1:4001</property>
                         <property name ="serviceName">hazelcast</property>
                         <property name ="registerLocalNode">false</property>
                     </properties>
