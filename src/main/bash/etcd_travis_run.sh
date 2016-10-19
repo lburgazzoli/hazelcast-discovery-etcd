@@ -7,9 +7,7 @@ ETCD_NAME="hz-discovery"
     -debug \
     -name $ETCD_NAME \
     --data-dir ./etcd-dist/$ETCD_NAME \
-    -advertise-client-urls http://${HOST_IP}:2379,http://${HOST_IP}:4001 \
     -listen-client-urls http://0.0.0.0:2379,http://0.0.0.0:4001 \
-    -initial-advertise-peer-urls http://${HOST_IP}:2380 \
     -listen-peer-urls http://0.0.0.0:2380 &
 
 
