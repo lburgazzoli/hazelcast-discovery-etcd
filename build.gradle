@@ -51,7 +51,7 @@ ext {
             commonsLang        : '3.4',
             jackson            : '2.8.4',
             junit              : '4.12',
-            etcd4j             : '2.8.0',
+            etcd4j             : '2.12.0',
             groovy             : '2.4.5',
         ]
     }
