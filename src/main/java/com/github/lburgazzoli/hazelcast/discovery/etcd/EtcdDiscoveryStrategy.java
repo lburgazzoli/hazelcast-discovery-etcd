@@ -15,6 +15,8 @@
  */
 package com.github.lburgazzoli.hazelcast.discovery.etcd;
 
+import com.hazelcast.logging.ILogger;
+import com.hazelcast.spi.discovery.AbstractDiscoveryStrategy;
 import com.hazelcast.spi.discovery.DiscoveryNode;
 import com.hazelcast.spi.discovery.DiscoveryStrategy;
 import com.hazelcast.util.ExceptionUtil;
@@ -34,7 +36,7 @@ import java.util.concurrent.TimeUnit;
 
 import static com.github.lburgazzoli.hazelcast.discovery.etcd.EtcdDiscovery.getProperty;
 
-public class EtcdDiscoveryStrategy implements DiscoveryStrategy {
+public class EtcdDiscoveryStrategy extends AbstractDiscoveryStrategy {
     private static final Logger LOGGER = LoggerFactory.getLogger(EtcdDiscoveryStrategy.class);
 
     private final EtcdDiscoveryNode localNode;
@@ -46,7 +48,8 @@ public class EtcdDiscoveryStrategy implements DiscoveryStrategy {
 
     private EtcdClient client;
 
-    public EtcdDiscoveryStrategy(DiscoveryNode node, final Map<String, Comparable> properties) {
+    public EtcdDiscoveryStrategy(ILogger logger, DiscoveryNode node, final Map<String, Comparable> properties) {
+    	super(logger, properties);
         this.etcdUrls = getProperty(
             properties,
             EtcdDiscovery.PROPERTY_URLS,
