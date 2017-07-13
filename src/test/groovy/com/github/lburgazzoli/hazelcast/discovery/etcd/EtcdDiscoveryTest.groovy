@@ -24,16 +24,37 @@ import com.hazelcast.spi.discovery.DiscoveryNode
 import com.hazelcast.spi.discovery.DiscoveryStrategy
 import com.hazelcast.spi.discovery.DiscoveryStrategyFactory
 import com.hazelcast.spi.discovery.SimpleDiscoveryNode
+import mousio.etcd4j.EtcdClient
+import org.junit.After
+import org.junit.Before
 import org.junit.Test
 
 class EtcdDiscoveryTest {
+    private EtcdClient client
+
+    @Before
+    void setUp() {
+        client = new EtcdClient(EtcdDiscovery.DEFAULT_ETCD_URL)
+        client.put('/hazelcast/node1', '{ "host": "127.0.0.1", "port": 9001 , "tags": { "name": "node1" } }').send().get()
+        client.put('/hazelcast/node2', '{ "host": "127.0.0.1", "port": 9002 , "tags": { "name": "node2" } }').send().get()
+        client.put('/hazelcast/node3', '{ "host": "127.0.0.1", "port": 5701 , "tags": { "name": "node3" } }').send().get()
+        client.put('/hazelcast/node4', '{ "host": "127.0.0.1" , "tags": { "name": "node4" } }').send().get()
+    }
+
+    @After
+    void tearDown() {
+        if (client) {
+            client.deleteDir('/hazelcast').recursive().send().get()
+            client.close()
+        }
+    }
 
     // *************************************************************************
     //
     // *************************************************************************
 
     @Test
-    public void discoveryProviderTest() {
+    void discoveryProviderTest() {
 
         def properties = [:]
         properties[ EtcdDiscovery.PROPERTY_URLS.key() ] = EtcdDiscovery.DEFAULT_ETCD_URL
@@ -70,7 +91,7 @@ class EtcdDiscoveryTest {
     }
 
     @Test
-    public void hazelcastInstanceTest() throws Exception {
+    void hazelcastInstanceTest() throws Exception {
         final Config config = loadConfig("test-hazelcast-discovery-etcd.xml")
         final HazelcastInstance hz = Hazelcast.newHazelcastInstance(config)
 

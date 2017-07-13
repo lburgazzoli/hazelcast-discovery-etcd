@@ -15,6 +15,8 @@
  */
 package com.github.lburgazzoli.hazelcast.discovery.etcd;
 
+import java.util.Map;
+
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -27,8 +29,6 @@ import com.hazelcast.config.properties.SimplePropertyDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Map;
-
 public class EtcdDiscovery {
     private static final Logger LOGGER = LoggerFactory.getLogger(EtcdDiscovery.class);
 
@@ -39,7 +39,7 @@ public class EtcdDiscovery {
             .setSerializationInclusion(JsonInclude.Include.NON_NULL);
 
     public static final int    DEFAULT_HZ_PORT             = NetworkConfig.DEFAULT_PORT;
-    public static final String  DEFAULT_ETCD_URL            = "http://127.0.0.1:4001";
+    public static final String  DEFAULT_ETCD_URL            = "http://127.0.0.1:2379";
     public static final String  DEFAULT_ETCD_URLS           = "http://127.0.0.1:2379,http://127.0.0.1:4001";
     public static final int     DEFAULT_ETCD_TIMEOUT_SEC    = 5;
     public static final String  DEFAULT_SERVICE_NAME        = "hazelcast";
