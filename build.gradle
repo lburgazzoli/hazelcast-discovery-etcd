@@ -2,31 +2,16 @@
 //
 // *****************************************************************************
 
-buildscript {
-    repositories {
-        mavenCentral()
-        mavenLocal()
-        jcenter()
-    }
-
-    dependencies {
-        classpath 'io.codearte.gradle.nexus:gradle-nexus-staging-plugin:0.5.3'
-    }
-}
-
 plugins {
     id 'java'
     id 'groovy'
     id 'maven'
-    id 'idea'
     id 'osgi'
     id 'signing'
-    id 'net.researchgate.release' version '2.5.0'
-    id 'com.github.ben-manes.versions' version '0.13.0'
+    id 'net.researchgate.release' version '2.6.0'
+    id 'com.github.ben-manes.versions' version '0.15.0'
+    id "io.codearte.nexus-staging" version '0.9.0'
 }
-
-apply plugin: 'io.codearte.nexus-staging'
-apply plugin: 'io.codearte.nexus-staging'
 
 // *****************************************************************************
 //
@@ -35,7 +20,7 @@ apply plugin: 'io.codearte.nexus-staging'
 dependencyUpdates.resolutionStrategy = {
   componentSelection { rules ->
     rules.all { ComponentSelection selection ->
-        boolean rejected = ['beta', 'rc', 'cr', 'm', 'ea'].any {
+        boolean rejected = ['alpha', 'beta', 'rc', 'cr', 'm', 'ea', 'pr'].any {
             qualifier -> selection.candidate.version ==~ /(?i).*[.-]${qualifier}[.\d-]*/
         }
         if (rejected) {
@@ -55,25 +40,24 @@ sourceCompatibility = JavaVersion.VERSION_1_8
 targetCompatibility = JavaVersion.VERSION_1_8
 
 ext {
-    isReleaseVersion = !version.endsWith("SNAPSHOT")
-    isCI             = Boolean.valueOf("$System.env.CI")
-    isPR             = "false" != System.env.TRAVIS_PULL_REQUEST 
+    isReleaseVersion  = !version.endsWith("SNAPSHOT")
+    isSnapshotVersion = version.endsWith("SNAPSHOT")
+    isCI              = Boolean.valueOf("$System.env.CI")
+    isPR              = System.env.CI_PULL_REQUEST?.trim() as Boolean
     gitRoot          = "https://github.com/lburgazzoli"
     gitProject       = "https://github.com/lburgazzoli/hazelcast-discovery-etcd"
     gitURL           = "git@github.com/lburgazzoli/hazelcast-discovery-etcd.git"
     gradleCiTasks    = (isReleaseVersion || isPR) ? ['clean', 'test'] : ['clean', 'test', 'uploadArchives']
 
-    ext {
-        versions = [
-            slf4j              : '1.7.22',
-            hazelcast          : '3.7.5',
-            commonsLang        : '3.5',
-            jackson            : '2.8.6',
-            junit              : '4.12',
-            etcd4j             : '2.13.0',
-            groovy             : '2.4.8',
-        ]
-    }
+    versions = [
+        slf4j              : '1.7.25',
+        hazelcast          : '3.8.3',
+        commonsLang        : '3.6',
+        jackson            : '2.8.9',
+        junit              : '4.12',
+        etcd4j             : '2.13.0',
+        groovy             : '2.4.12',
+    ]
 
     bundleImportPackages = [
         '*'
@@ -98,17 +82,6 @@ ext {
 compileJava {
     sourceCompatibility = JavaVersion.VERSION_1_8
     targetCompatibility = JavaVersion.VERSION_1_8
-}
-
-// *************************************************************************
-//
-// *************************************************************************
-
-idea {
-    module {
-        downloadJavadoc = true
-        downloadSources = true
-    }
 }
 
 // *************************************************************************
@@ -261,8 +234,13 @@ uploadArchives {
 
 afterReleaseBuild.dependsOn uploadArchives
 
-task close(dependsOn: 'closeAndPromoteRepository') {
+task ci(dependsOn: project.gradleCiTasks) {
+    doFirst {
+        println "=============================================================="
+        println "CI Tasks: ${project.gradleCiTasks}"
+        println "=============================================================="
+    }
 }
 
-task ci(dependsOn: project.gradleCiTasks) {
+task close(dependsOn: 'closeAndPromoteRepository') {
 }
