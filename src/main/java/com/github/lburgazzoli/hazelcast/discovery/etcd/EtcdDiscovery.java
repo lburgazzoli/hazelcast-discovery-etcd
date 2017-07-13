@@ -38,7 +38,7 @@ public class EtcdDiscovery {
             .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
             .setSerializationInclusion(JsonInclude.Include.NON_NULL);
 
-    public static final int    DEFAULT_HZ_PORT             = NetworkConfig.DEFAULT_PORT;
+    public static final int     DEFAULT_HZ_PORT             = NetworkConfig.DEFAULT_PORT;
     public static final String  DEFAULT_ETCD_URL            = "http://127.0.0.1:2379";
     public static final String  DEFAULT_ETCD_URLS           = "http://127.0.0.1:2379,http://127.0.0.1:4001";
     public static final int     DEFAULT_ETCD_TIMEOUT_SEC    = 5;

@@ -34,7 +34,7 @@ class EtcdDiscoveryTest {
 
     @Before
     void setUp() {
-        client = new EtcdClient(EtcdDiscovery.DEFAULT_ETCD_URL)
+        client = new EtcdClient(new URI(EtcdDiscovery.DEFAULT_ETCD_URL))
         client.put('/hazelcast/node1', '{ "host": "127.0.0.1", "port": 9001 , "tags": { "name": "node1" } }').send().get()
         client.put('/hazelcast/node2', '{ "host": "127.0.0.1", "port": 9002 , "tags": { "name": "node2" } }').send().get()
         client.put('/hazelcast/node3', '{ "host": "127.0.0.1", "port": 5701 , "tags": { "name": "node3" } }').send().get()
