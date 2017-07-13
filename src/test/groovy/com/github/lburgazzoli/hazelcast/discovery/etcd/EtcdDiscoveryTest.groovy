@@ -35,16 +35,19 @@ class EtcdDiscoveryTest {
     @Before
     void setUp() {
         client = new EtcdClient(new URI(EtcdDiscovery.DEFAULT_ETCD_URL))
-        client.put('/hazelcast/node1', '{ "host": "127.0.0.1", "port": 9001 , "tags": { "name": "node1" } }').send().get()
-        client.put('/hazelcast/node2', '{ "host": "127.0.0.1", "port": 9002 , "tags": { "name": "node2" } }').send().get()
-        client.put('/hazelcast/node3', '{ "host": "127.0.0.1", "port": 5701 , "tags": { "name": "node3" } }').send().get()
-        client.put('/hazelcast/node4', '{ "host": "127.0.0.1" , "tags": { "name": "node4" } }').send().get()
+
+        EtcdDiscoveryTestSupport.NODE_NAMES.each {
+            def key = "/${EtcdDiscovery.DEFAULT_SERVICE_NAME}/${it}"
+            def val = EtcdDiscoveryTestSupport.MAPPER.writeValueAsString(EtcdDiscoveryTestSupport.NODES[it]);
+
+            client.put(key, val).send().get()
+        }
     }
 
     @After
     void tearDown() {
         if (client) {
-            client.deleteDir('/hazelcast').recursive().send().get()
+            client.deleteDir("/${EtcdDiscovery.DEFAULT_SERVICE_NAME}").recursive().send().get()
             client.close()
         }
     }
@@ -61,7 +64,7 @@ class EtcdDiscoveryTest {
         properties[ EtcdDiscovery.PROPERTY_SERVICE_NAME.key() ] = EtcdDiscovery.DEFAULT_SERVICE_NAME
         properties[ EtcdDiscovery.PROPERTY_REGISTER_LOCAL_NODE.key() ] = true
 
-        DiscoveryNode local = new SimpleDiscoveryNode(new Address("127.0.0.1", 1010));
+        DiscoveryNode local = new SimpleDiscoveryNode(new Address("127.0.0.1", 1010))
         DiscoveryStrategyFactory factory = new EtcdDiscoveryStrategyFactory()
         DiscoveryStrategy provider = factory.newDiscoveryStrategy(local, null, properties)
 

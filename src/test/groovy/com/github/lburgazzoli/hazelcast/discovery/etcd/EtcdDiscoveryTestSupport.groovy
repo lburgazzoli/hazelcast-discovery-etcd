@@ -15,7 +15,11 @@
  */
 package com.github.lburgazzoli.hazelcast.discovery.etcd
 
+import com.fasterxml.jackson.databind.ObjectMapper
+
 class EtcdDiscoveryTestSupport {
+    public static final def MAPPER = new ObjectMapper()
+    public static final def NODE_NAMES = ['node1', 'node2', 'node3', 'node4' ]
     public static final def NODES = [
         "hazelcast-127.0.0.1-1010" : [
             "host": "127.0.0.1",
