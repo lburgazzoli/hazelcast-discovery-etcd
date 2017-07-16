@@ -21,7 +21,7 @@ jdk:
   - oraclejdk8
 
 script: "
-  ./mvnw -Pintegration install
+  ./gradelw ci
 "
 env:
   global:

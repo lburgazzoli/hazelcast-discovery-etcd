@@ -44,10 +44,10 @@ ext {
     isSnapshotVersion = version.endsWith("SNAPSHOT")
     isCI              = Boolean.valueOf("$System.env.CI")
     isPR              = "false" != System.env.TRAVIS_PULL_REQUEST
-    gitRoot          = "https://github.com/lburgazzoli"
-    gitProject       = "https://github.com/lburgazzoli/hazelcast-discovery-etcd"
-    gitURL           = "git@github.com/lburgazzoli/hazelcast-discovery-etcd.git"
-    gradleCiTasks    = (isReleaseVersion || isPR) ? ['clean', 'test'] : ['clean', 'test', 'uploadArchives']
+    gitRoot           = "https://github.com/lburgazzoli"
+    gitProject        = "https://github.com/lburgazzoli/hazelcast-discovery-etcd"
+    gitURL            = "git@github.com/lburgazzoli/hazelcast-discovery-etcd.git"
+    gradleCiTasks     = (isReleaseVersion || isPR) ? ['clean', 'test'] : ['clean', 'test', 'uploadArchives']
 
     versions = [
         slf4j              : '1.7.25',
